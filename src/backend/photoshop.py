@@ -102,16 +102,20 @@ class PhotoshopBridge:
         try:
             ps = PhotoshopBridge._get_photoshop_connection()
             logger.info(f"[+] Initializing Photoshop Batch for {len(orig_paths)} pages...")
+            
+            psd_path = os.path.abspath(os.path.join(clean_dir, 'photoshop'))
+            os.makedirs(psd_path, exist_ok=True)
 
             for i, orig_path in enumerate(orig_paths):
                 abs_orig = os.path.abspath(orig_path)
                 doc = ps.Open(abs_orig)
+            
                 try:
                     doc.ActiveLayer.Name = f"Page_{i+1}_Original"
                 except Exception:
                     pass
                 
-                clean_name = os.path.splitext(os.path.basename(orig_path))[0] + "_cleaned.jpg"
+                clean_name = os.path.splitext(os.path.basename(orig_path))[0] + "_cleaned.png"
                 clean_path = os.path.abspath(os.path.join(clean_dir, clean_name))
                 
                 if os.path.exists(clean_path):
@@ -125,7 +129,13 @@ class PhotoshopBridge:
                         doc.ActiveLayer.Name = f"Page_{i+1}_Cleaned"
                     except Exception:
                         pass
+                    
+                doc_name = os.path.splitext(os.path.basename(orig_path))[0] + ".psd"
+                doc_path = os.path.abspath(os.path.join(psd_path, doc_name))
                 
+                doc.SaveAs(doc_path)
+                logger.info(f"    - Saved {psd_path}")
+                    
                 logger.info(f"    - Page {i+1} merged in PS")
             
             return True
