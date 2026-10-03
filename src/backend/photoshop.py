@@ -111,7 +111,7 @@ class PhotoshopBridge:
                 except Exception:
                     pass
                 
-                clean_name = os.path.splitext(os.path.basename(orig_path))[0] + "_cleaned.jpg"
+                clean_name = os.path.splitext(os.path.basename(orig_path))[0] + "_cleaned.png"
                 clean_path = os.path.abspath(os.path.join(clean_dir, clean_name))
                 
                 if os.path.exists(clean_path):
